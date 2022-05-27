@@ -116,7 +116,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const modal = document.querySelector ('.modal');
         const modalBtn = document.querySelectorAll('[data-modal]');
-        const modalClose = document.querySelector ('[data-close]');
         const modalTimerId = setTimeout (openModal,8000);
 
        
@@ -126,7 +125,13 @@ window.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener ('click', openModal);
        });
 
-        modalClose.addEventListener ('click', closeModal);
+
+       modal.addEventListener ('click', (e) => {
+           if (e.target === modal || e.target.getAttribute('data-close') == '') {
+               closeModal ();
+           }
+       })
+
 
         document.addEventListener ('keydown', (e) => {
             if (e.code === "Escape") {
@@ -244,7 +249,7 @@ window.addEventListener('DOMContentLoaded', () => {
             const forms = document.querySelectorAll ('form');
 
             const message = {
-                loading: 'Loading',
+                loading: 'img/form/spinner.svg',
                 success: 'Success!',
                 failure: 'Error'
             };
@@ -258,9 +263,13 @@ window.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault ();
 
                     const statusMessage = document.createElement ('div');
-                    statusMessage.classList.add ('status');
-                    statusMessage.textContent = message.loading;
+                    statusMessage.src = message.loading;
+                    statusMessage.style.cssText = `
+                    display: block;
+                    margin: 0 auto;
+                    `;
                     form.append (statusMessage);
+                    form.insertAdjacentElement ('afterend', statusMessage);
 
                     const request = new XMLHttpRequest();
                     request.open ('POST', 'server.php');
@@ -281,19 +290,39 @@ window.addEventListener('DOMContentLoaded', () => {
                     request.addEventListener('load', () => {
                         if (request.status === 200) {
                             console.log (request.response);
-                            statusMessage.textContent = message.success;
+                            showThanksModal( message.success);
                             form.reset();
-                            setTimeout(() => {
-                                statusMessage.remove ()
-                            }, 1000);
+                             statusMessage.remove ();
                         } else {
-                            statusMessage.textContent = message.failure;
+                            showThanksModal (message.failure);
                         }
                     });
                 });
             }
 
+            function showThanksModal (message){
+                const prevModalDialog = document.querySelector ('.modal__dialog');
 
+                prevModalDialog.classList.add ('hide');
+                openModal();
+
+                const thanksModal = document.createElement ('div');
+                thanksModal.classList.add ('modal__dialog');
+                thanksModal.innerHTML = `
+                <div class = "modal__content">
+                    <div class = "modal__close" data-close>×</div>
+                    <div class = "modal__title">${message}</div>
+                </div>
+                `;
+
+                document.querySelector ('.modal').append(thanksModal);
+                setTimeout(() => {
+                    thanksModal.remove();
+                    prevModalDialog.classList.add ('show');
+                    prevModalDialog.classList.add ('hide');
+                    closeModal();
+                }, 4000);
+            }
 
 
 
