@@ -167,12 +167,13 @@ window.addEventListener('DOMContentLoaded', () => {
         // Classes for cards
 
         class MenuCard {
-            constructor (src, alt, title, descr, price, parentSelector) {
+            constructor (src, alt, title, descr, price, parentSelector, ...clases) {
                 this.src = src;
                 this.alt = alt;
                 this.title = title;
                 this.descr = descr;
                 this.price = price;
+                this.clases = clases;
                 this.parent = document.querySelector(parentSelector);
                 this.transfer = 27;
                 this.changeToUAH ();
@@ -184,8 +185,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
             render () {
                 const element = document.createElement ('div');
+
+                if (this.clases.length === 0) {
+                    this.element = 'menu__item';
+                    element.classList.add (this.element);
+                } else {
+                    this.clases.forEach(className => element.classList.add(className));
+                }
+
+                
                 element.innerHTML = `
-                    <div class="menu__item">
                         <img src= ${this.src} alt= ${this.alt} >
                         <h3 class="menu__item-subtitle">${this.title}"</h3>
                         <div class="menu__item-descr">${this.descr}</div>
@@ -194,7 +203,6 @@ window.addEventListener('DOMContentLoaded', () => {
                             <div class="menu__item-cost">Цена:</div>
                             <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
                     </div>
-                </div>
                 `;
                 this.parent.append (element);
             }
@@ -226,6 +234,69 @@ window.addEventListener('DOMContentLoaded', () => {
             21,
             '.menu .container'
         ).render();
+
+
+
+            // Forms
+
+
+
+            const forms = document.querySelectorAll ('form');
+
+            const message = {
+                loading: 'Loading',
+                success: 'Success!',
+                failure: 'Error'
+            };
+
+            forms.forEach (item => {
+                postDate(item);
+            })
+
+            function postDate (form) {
+                form.addEventListener ('submit', (e) => {
+                    e.preventDefault ();
+
+                    const statusMessage = document.createElement ('div');
+                    statusMessage.classList.add ('status');
+                    statusMessage.textContent = message.loading;
+                    form.append (statusMessage);
+
+                    const request = new XMLHttpRequest();
+                    request.open ('POST', 'server.php');
+
+                    request.setRequestHeader('Content-type', 'application/json');
+                    const formData = new FormData (form);
+
+                    const object = {};
+                    formData.forEach (function(value, key) {
+                        object[key] = value;
+                    });
+
+                    const json = JSON.stringify(object);
+
+
+                    request.send(json);
+
+                    request.addEventListener('load', () => {
+                        if (request.status === 200) {
+                            console.log (request.response);
+                            statusMessage.textContent = message.success;
+                            form.reset();
+                            setTimeout(() => {
+                                statusMessage.remove ()
+                            }, 1000);
+                        } else {
+                            statusMessage.textContent = message.failure;
+                        }
+                    });
+                });
+            }
+
+
+
+
+
 
 
 
