@@ -255,10 +255,22 @@ window.addEventListener('DOMContentLoaded', () => {
             };
 
             forms.forEach (item => {
-                postDate(item);
-            })
+                bindpostDate(item);
+            });
+            
+            const postDate = async (url, data) => {
+                const res = await fetch (url, {
+                    method: "POST",
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        body: data
+                });
 
-            function postDate (form) {
+                return await res.json();
+            };
+
+            function bindpostDate (form) {
                 form.addEventListener ('submit', (e) => {
                     e.preventDefault ();
 
@@ -281,17 +293,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         object[key] = value;
                     });
 
-                    const json = 
-
-
-                    fetch('server.php', {
-                        method: "POST",
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        body: JSON.stringify(object)
-                    })
-                    .then (data => data.text())
+                    postDate('http://localhost:3000/requests', JSON.stringify(object) )
                     .then(data => {
                             console.log (data);
                             showThanksModal( message.success);
