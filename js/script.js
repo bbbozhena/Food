@@ -281,7 +281,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         object[key] = value;
                     });
 
-                    const json = ;
+                    const json = 
 
 
                     fetch('server.php', {
@@ -328,9 +328,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 }, 4000);
             }
 
-
-
-
+            
+            fetch(' http://localhost:3000/menu')
+            .then(data => data.json())
+            .then(res => console.log(res));
 
 
 
