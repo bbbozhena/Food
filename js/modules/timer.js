@@ -1,9 +1,7 @@
-function timer() {
+function timer(id, deadline) {
   // Timer
 
   // Variables
-
-  const deadline = "2022-06-11";
 
   // Function
 
@@ -54,6 +52,6 @@ function timer() {
     }
   }
 
-  setClock(".timer", deadline);
+  setClock(id, deadline);
 }
-module.exports = timer;
+export default timer;

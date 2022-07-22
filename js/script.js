@@ -12,11 +12,25 @@ window.addEventListener("DOMContentLoaded", () => {
     () => openModal(".modal", modalTimerId),
     8000
   );
-  tabs();
+  tabs(
+    ".tabheader__item",
+    ".tabcontent",
+    ".tabheader__items",
+    "tabheader__item_active"
+  );
   modal("[data-modal]", ".modal", modalTimerId);
-  timer();
+  timer(".timer", "2022-10-11");
   cards();
   calc();
-  forms(modalTimerId);
-  slider();
+  forms("form", modalTimerId);
+  slider({
+    container: ".offer__slider",
+    nextArrow: ".offer__slider-next",
+    slide: ".offer__slide",
+    prevArrow: ".offer__slider-prev",
+    totalCounter: "#total",
+    currentCounter: "#current",
+    wrapper: ".offer__slider-wrapper",
+    field: ".offer__slider-inner",
+  });
 });
